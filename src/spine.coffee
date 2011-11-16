@@ -336,7 +336,7 @@ class Model extends Module
     @id          = guid() unless @id
     @newRecord   = false
     records      = @constructor.records
-    records[@id] = @dup(false)
+    records[@id] = @
     clone        = records[@id].clone()
     clone.trigger('create', options)
     clone.trigger('change', 'create', options)

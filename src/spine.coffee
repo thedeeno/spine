@@ -334,7 +334,7 @@ class Model extends Module
   create: (options) ->
     @trigger('beforeCreate', options)
     @id          = guid() unless @id
-    @newRecord   = false    
+    @newRecord   = false
     records      = @constructor.records
     records[@id] = @dup(false)
     clone        = records[@id].clone()

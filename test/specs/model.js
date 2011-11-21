@@ -215,15 +215,28 @@ describe("Model", function(){
     expect(asset.id.length).toEqual(36);
   });
   
-  it("can be duplicated", function(){
-    var asset = Asset.create({name: "who's your daddy?"});
-    expect(asset.dup().__proto__).toBe(Asset.prototype);
-    
-    expect(asset.name).toEqual("who's your daddy?");
-    asset.name = "I am your father";
-    expect(asset.reload().name).toBe("who's your daddy?");
-    
-    expect(asset).not.toBe(Asset.records[asset.id]);
+  describe("duplication", function(){
+
+    it("copies the model", function(){
+      var asset = Asset.create({name: "who's your daddy?"});
+      expect(asset.dup().__proto__).toBe(Asset.prototype);
+      
+      expect(asset.name).toEqual("who's your daddy?");
+      asset.name = "I am your father";
+      expect(asset.reload().name).toBe("who's your daddy?");
+      
+      expect(asset).not.toBe(Asset.records[asset.id]);
+    }); 
+
+    it("takes a newRecord argument, which controls if a new record is returned", function(){
+      var asset = Asset.create({name: "hotel california"});    
+      expect(asset.dup().id).toBeUndefined();
+      expect(asset.dup().newRecord).toBeTruthy();
+
+      expect(asset.dup(false).id).toBe(asset.id);
+      expect(asset.dup(false).newRecord).toBeFalsy();
+    });
+  
   });
   
   it("can be cloned", function(){
@@ -265,15 +278,6 @@ describe("Model", function(){
     expect(File.className).toBe("File");
     
     expect(File.attributes).toEqual(Asset.attributes);
-  });
-  
-  it("dup should take a newRecord argument, which controls if a new record is returned", function(){
-    var asset = Asset.create({name: "hotel california"});    
-    expect(asset.dup().id).toBeUndefined();
-    expect(asset.dup().newRecord).toBeTruthy();
-
-    expect(asset.dup(false).id).toBe(asset.id);
-    expect(asset.dup(false).newRecord).toBeFalsy();
   });
   
   it("should be able to change ID", function(){

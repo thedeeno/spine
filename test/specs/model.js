@@ -236,7 +236,18 @@ describe("Model", function(){
       expect(asset.dup(false).id).toBe(asset.id);
       expect(asset.dup(false).newRecord).toBeFalsy();
     });
-  
+
+    it("doesn't call model's constructor more than once", function(){
+      var spy = jasmine.createSpy("fakeConstructor", function() {});
+      Asset.include({init:spy});
+
+      expect(spy.callCount).toEqual(0); 
+      var a = new Asset();
+      expect(spy.callCount).toEqual(1); 
+      a.dup();
+      expect(spy.callCount).toEqual(1); 
+    });
+
   });
   
   it("can be cloned", function(){

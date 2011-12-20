@@ -464,6 +464,17 @@ unless typeof Object.create is 'function'
     Func.prototype = o
     new Func()
 
+unless Object.getOwnPropertyDescriptors
+  Object.getOwnPropertyDescriptors = (object) ->
+    getPropertyDescriptor = (key) ->
+      pd = Object.getOwnPropertyDescriptor(object, key)
+      returnObj[key] = pd
+
+    keys = Object.getOwnPropertyNames(object)
+    returnObj = {}
+    keys.forEach getPropertyDescriptor
+    return returnObj
+
 isArray = (value) ->
   Object::toString.call(value) is '[object Array]'
 
@@ -481,18 +492,6 @@ guid = ->
     v = if c is 'x' then r else r & 3 | 8
     v.toString 16
   .toUpperCase()
-
-getOwnPropertyDescriptors = (object) ->
-  getPropertyDescriptor = (key) ->
-    pd = Object.getOwnPropertyDescriptor(object, key)
-    returnObj[key] = pd
-
-  keys = Object.getOwnPropertyNames(object)
-  returnObj = {}
-  keys.forEach getPropertyDescriptor
-  return returnObj
-
-Object.getOwnPropertyDescriptors = getOwnPropertyDescriptors unless Object.getOwnPropertyDescriptors
 
 # Globals
 

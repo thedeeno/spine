@@ -299,11 +299,6 @@ class Model extends Module
       delete result.newRecord
       delete result.id
     result
-    if newRecord is false
-      result.newRecord = @newRecord
-    else
-      delete result.id
-    result
 
   clone: ->
     Object.create(@)

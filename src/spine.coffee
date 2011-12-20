@@ -289,14 +289,19 @@ class Model extends Module
     @
 
   dup: (newRecord) ->
-    if Object.getOwnPropertyNames(@).length == 0 # must be a clone, dup the parent
-      return Object.getPrototypeOf(@).dup(newRecord)
+    result = {}
+    if Spine.compatMode
+      # fall back to dup via constructor
+      result = new @constructor(@attributes())
+    else
+      if Object.getOwnPropertyNames(@).length == 0 # must be a clone, dup the parent
+        return Object.getPrototypeOf(@).dup(newRecord)
+      result  = Object.create(Object.getPrototypeOf(@), Object.getOwnPropertyDescriptors(@))
 
-    result  = Object.create(Object.getPrototypeOf(@), Object.getOwnPropertyDescriptors(@))
     if newRecord is false
       result.newRecord = @newRecord
     else
-      delete result.newRecord
+      delete result.newRecord unless Spine.compatMode
       delete result.id
     result
 
@@ -458,7 +463,10 @@ class Controller extends Module
 
 $ = window.jQuery or window.Zepto or (element) -> element
 
+compatibilityMode = false
+
 unless typeof Object.create is 'function'
+  compatibilityMode = true
   Object.create = (o) ->
     Func = ->
     Func.prototype = o
@@ -501,6 +509,7 @@ module?.exports  = Spine
 Spine.version    = '1.0.5'
 Spine.isArray    = isArray
 Spine.isBlank    = isBlank
+Spine.compatMode = compatibilityMode
 Spine.$          = $
 Spine.Events     = Events
 Spine.Log        = Log

@@ -298,6 +298,21 @@ describe("Model", function(){
       expect(Object.getPrototypeOf(asset.dup())).toBe(Asset.prototype)
       expect(Object.getPrototypeOf(clone.dup())).toBe(Asset.prototype)
     });
+
+    it("falls back to legacy dup mechanism when in compatibility mode", function(){
+      var asset = Asset.create({name: "hotel california"});
+      spy = spyOn(Object, "create").andCallThrough();
+
+      Spine.compatMode = true;
+      asset.dup();
+      expect(spy).wasNotCalled();
+
+      spy.reset();
+
+      Spine.compatMode = false;
+      asset.dup();
+      expect(spy).wasCalled();
+    });
   });
 
   it("dup should take a newRecord argument, which controls if a new record is returned", function(){
